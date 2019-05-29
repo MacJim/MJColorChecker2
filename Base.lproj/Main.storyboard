@@ -101,10 +101,16 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lPB-HI-S4T">
                                 <rect key="frame" x="91" y="30.5" width="36" height="30"/>
                                 <state key="normal" title="Copy"/>
+                                <connections>
+                                    <action selector="copyHexValueButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="lqR-eV-t1q"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gPv-MC-ipd">
                                 <rect key="frame" x="135" y="31.5" width="30" height="30"/>
                                 <state key="normal" title="Edit"/>
+                                <connections>
+                                    <action selector="editHexValueButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="xuO-PH-Brh"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

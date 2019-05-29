@@ -29,6 +29,7 @@ class ViewController: UIViewController {
         updateElementsVisibility()
         updateSliderValuesFromCurrentColor()
         updateLabelTextFromSliderValues()
+        updateHexValueLabelTextFromCurrentColor()
     }
     
     
@@ -74,6 +75,7 @@ class ViewController: UIViewController {
     @IBAction func valueSlidersValueChanged(_ sender: UISlider) {
         updateCurrentColorFromSliders()
         updateLabelTextFromSliderValues()
+        updateHexValueLabelTextFromCurrentColor()
         updateViewBackgroundColor()
     }
     
@@ -84,11 +86,104 @@ class ViewController: UIViewController {
         updateLabelTextFromSliderValues()
     }
     
+    @IBAction func copyHexValueButtonPressed(_ sender: UIButton) {
+        UIPasteboard.general.string = hexValueLabel.text
+    }
+    
+    @IBAction func editHexValueButtonPressed(_ sender: UIButton) {
+        let alertController = UIAlertController(title: "New hex value?", message: "Current value: " + hexValueLabel.text!, preferredStyle: UIAlertController.Style.alert)
+        alertController.addTextField(configurationHandler: {
+            textField in
+            textField.text = "#"
+        })
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: {
+            [self, weak alertController] (_) in
+            let textField = alertController?.textFields![0]
+            self.setCurrentColor(hexValueString: textField?.text)
+            self.updateViewBackgroundColor()
+            self.updateSliderValuesFromCurrentColor()
+            self.updateLabelTextFromSliderValues()
+            self.updateHexValueLabelTextFromCurrentColor()
+        }))
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
     
     //MARK: - Current color
     var currentColor: UIColor!
     var currentColorMode: ColorMode!
     
+    func setCurrentColor(r: CGFloat?, g: CGFloat?, b: CGFloat?) {
+        var newR: CGFloat = 0
+        var newG: CGFloat = 0
+        var newB: CGFloat = 0
+        currentColor.getRed(&newR, green: &newG, blue: &newB, alpha: nil)
+        
+        if let r = r {
+            newR = r
+        }
+        if let g = g {
+            newG = g
+        }
+        if let b = b {
+            newB = b
+        }
+        
+        currentColor = UIColor(red: newR, green: newG, blue: newB, alpha: 1.0)
+    }
+    
+    func setCurrentColor(h: CGFloat?, s: CGFloat?, b: CGFloat?) {
+        var newH: CGFloat = 0
+        var newS: CGFloat = 0
+        var newB: CGFloat = 0
+        currentColor.getHue(&newH, saturation: &newS, brightness: &newB, alpha: nil)
+        
+        if let h = h {
+            newH = h
+        }
+        if let s = s {
+            newS = s
+        }
+        if let b = b {
+            newB = b
+        }
+        
+        currentColor = UIColor(hue: newH, saturation: newS, brightness: newB, alpha: 1.0)
+    }
+    
+    /**
+     * - Parameter hexValueString: "#FFFFFF" or "FFFFFF".
+     */
+    func setCurrentColor(hexValueString: String?) {
+        guard let hexValueString = hexValueString else {
+            return
+        }
+        
+        let sanitizedHexString = hexValueString.replacingOccurrences(of: "#", with: "")
+        guard (sanitizedHexString.count == 6) else {
+            return
+        }
+        
+        var rgbValue: UInt32 = 0
+        guard Scanner(string: sanitizedHexString).scanHexInt32(&rgbValue) else {
+            return
+        }
+        
+        let r = CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0
+        let g = CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0
+        let b = CGFloat(rgbValue & 0x0000FF) / 255.0
+        
+        setCurrentColor(r: r, g: g, b: b)
+    }
+    
+    func updateViewBackgroundColor() {
+        self.view.backgroundColor = currentColor
+    }
+    
+    
+    //MARK: - Sliders
     func updateCurrentColorFromSliders() {
         switch (currentColorMode!) {
         case .hsb:
@@ -129,6 +224,8 @@ class ViewController: UIViewController {
         }
     }
     
+    
+    //MARK: - Labels
     func updateLabelTextFromSliderValues() {
         switch (currentColorMode!) {
         case .hsb:
@@ -151,8 +248,25 @@ class ViewController: UIViewController {
         }
     }
     
-    func updateViewBackgroundColor() {
-        self.view.backgroundColor = currentColor
+    
+    //MARK: - HEX value label
+    func updateHexValueLabelTextFromCurrentColor() {
+        var r: CGFloat = 0
+        var g: CGFloat = 0
+        var b: CGFloat = 0
+        currentColor.getRed(&r, green: &g, blue: &b, alpha: nil)
+        
+        let rInt = Int(round(Double(r * 255.0)))
+        let gInt = Int(round(Double(g * 255.0)))
+        let bInt = Int(round(Double(b * 255.0)))
+        
+        /*
+         * % defines the format specifier
+         * 02 defines the length of the string
+         * l casts the value to an unsigned long
+         * X prints the value in hexadecimal (0-9 and A-F)
+         */
+        hexValueLabel.text = String(format: "#%02lX%02lX%02lX", rInt, gInt, bInt)
     }
     
     
