@@ -67,6 +67,9 @@ class ViewController: UIViewController {
     @IBOutlet weak var editButton3: UIButton!
     @IBOutlet weak var editButton4: UIButton!
     
+    @IBOutlet weak var colorModeSegmentedControl: UISegmentedControl!
+    
+    
     //MARK: - IB Actions
     @IBAction func valueSlidersValueChanged(_ sender: UISlider) {
         updateCurrentColorFromSliders()
@@ -154,6 +157,14 @@ class ViewController: UIViewController {
     
     
     //MARK: - Elements visibility
+    override var prefersStatusBarHidden: Bool {
+        if (isInPreviewMode) {
+            return true
+        } else {
+            return false
+        }
+    }
+    
     /**
      * Double tap to enter preview mode.
      *
@@ -161,6 +172,8 @@ class ViewController: UIViewController {
      */
     var isInPreviewMode = false
     func updateElementsVisibility() {
+        setNeedsStatusBarAppearanceUpdate()
+        
         if (isInPreviewMode) {
             hexValueLabel.isHidden = true
             copyHexValueButton.isHidden = true
@@ -180,6 +193,8 @@ class ViewController: UIViewController {
             editButton2.isHidden = true
             editButton3.isHidden = true
             editButton4.isHidden = true
+            
+            colorModeSegmentedControl.isHidden = true
         } else {
             hexValueLabel.isHidden = false
             copyHexValueButton.isHidden = false
@@ -196,6 +211,8 @@ class ViewController: UIViewController {
             editButton2.isHidden = false
             editButton3.isHidden = false
             editButton4.isHidden = false
+            
+            colorModeSegmentedControl.isHidden = false
             
             if (currentColorMode == .cmyk) {
                 editButton1.isHidden = false

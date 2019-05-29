@@ -150,6 +150,7 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="colorModeSegmentedControl" destination="MC6-Jd-TZ2" id="CHp-XU-Svc"/>
                         <outlet property="copyHexValueButton" destination="lPB-HI-S4T" id="Y7U-IJ-uut"/>
                         <outlet property="editButton1" destination="ynG-n1-NGe" id="Oux-Ua-pIg"/>
                         <outlet property="editButton2" destination="Xii-OS-s2W" id="TnJ-n6-YRv"/>
