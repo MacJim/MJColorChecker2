@@ -36,7 +36,8 @@ class ViewController: UIViewController {
     //MARK: UIResponder stuff
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let firstTouch = touches.first {
-            if (firstTouch.tapCount == 2) {
+            if (firstTouch.tapCount % 2 == 0) {
+                //If the user double taps at the same place for multiple times, they will be considered as a single touch.
                 if (isInPreviewMode) {
                     isInPreviewMode = false
                 } else {
