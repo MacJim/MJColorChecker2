@@ -20,12 +20,12 @@ class ViewController: UIViewController {
         valueLabel3.font = UIFont.monospacedDigitSystemFont(ofSize: valueLabel3.font.pointSize, weight: UIFont.Weight.regular)
         valueLabel4.font = UIFont.monospacedDigitSystemFont(ofSize: valueLabel4.font.pointSize, weight: UIFont.Weight.regular)
         
-        //TODO: Restore last color from user defaults.
-        currentColorMode = .rgb
-        currentColor = UIColor.white
+        //Restore last color from user defaults.
+        loadSavedColor()
         
         updateViewBackgroundColor()
         
+        colorModeSegmentedControl.selectedSegmentIndex = currentColorMode.rawValue
         updateElementsVisibility()
         updateSliderValuesFromCurrentColor()
         updateLabelTextFromSliderValues()
@@ -342,5 +342,35 @@ class ViewController: UIViewController {
     
     
     //MARK: - Data persistence
+    func saveCurrentColor() {
+        let userDefaults = UserDefaults.standard
+        
+        var r: CGFloat = 0
+        var g: CGFloat = 0
+        var b: CGFloat = 0
+        currentColor.getRed(&r, green: &g, blue: &b, alpha: nil)
+        
+        userDefaults.set(r, forKey: "CurrentColorRed")
+        userDefaults.set(g, forKey: "CurrentColorGreen")
+        userDefaults.set(b, forKey: "CurrentColorBlue")
+        
+        userDefaults.set(currentColorMode!.rawValue, forKey: "CurrentColorMode")
+    }
+    
+    /**
+     * - Note: This method will NOT update the view background color.
+     */
+    func loadSavedColor() {
+        let userDefaults = UserDefaults.standard
+        
+        if let r = userDefaults.object(forKey: "CurrentColorRed") as? CGFloat, let g = userDefaults.object(forKey: "CurrentColorGreen") as? CGFloat, let b = userDefaults.object(forKey: "CurrentColorBlue") as? CGFloat {
+            currentColor = UIColor(red: r, green: g, blue: b, alpha: 1.0)
+        } else {
+            currentColor = UIColor.white
+        }
+        
+        let savedColorModeRawValue = userDefaults.integer(forKey: "CurrentColorMode")    //Default is 0 (RGB)
+        currentColorMode = ColorMode(rawValue: savedColorModeRawValue)
+    }
 }
 
