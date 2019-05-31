@@ -80,6 +80,122 @@ class ViewController: UIViewController {
         updateViewBackgroundColor()
     }
     
+    @IBAction func editButton1Pressed(_ sender: UIButton) {
+        //Currently this button is unused.
+        //Its functionality will be added once CMYK is supported.
+    }
+    
+    @IBAction func editButton2Pressed(_ sender: UIButton) {
+        var alertTitle: String!
+        var alertMessage: String?
+        switch (currentColorMode!) {
+        case .rgb:
+            alertTitle = "New red value?"
+            alertMessage = "0 ~ 255"
+        case .hsb:
+            alertTitle = "New hue value?"
+            alertMessage = "0° ~ 360°"
+        default:
+            alertTitle = "Missingno. button 2"
+        }
+        
+        showValueEditingAlert(title: alertTitle, message: alertMessage, defaultText: nil, keyboardType: .decimalPad, completion: {
+            [self] (newValueString) in
+            if let newValueString = newValueString {
+                if let newValueDouble = Double(newValueString) {
+                    let newValue = CGFloat(newValueDouble)
+                    
+                    switch (self.currentColorMode!) {
+                    case .hsb:
+                        self.setCurrentColor(h: newValue / 360.0, s: nil, b: nil)
+                        
+                    default:    //Default color mode is RGB.
+                        self.setCurrentColor(r: newValue / 255.0, g: nil, b: nil)
+                    }
+                    
+                    self.updateSliderValuesFromCurrentColor()
+                    self.updateLabelTextFromSliderValues()
+                    self.updateHexValueLabelTextFromCurrentColor()
+                    self.updateViewBackgroundColor()
+                }
+            }
+        })
+    }
+    
+    @IBAction func editButton3Pressed(_ sender: UIButton) {
+        var alertTitle: String!
+        var alertMessage: String?
+        switch (currentColorMode!) {
+        case .rgb:
+            alertTitle = "New green value?"
+            alertMessage = "0 ~ 255"
+        case .hsb:
+            alertTitle = "New saturation value?"
+            alertMessage = "0% ~ 100%"
+        default:
+            alertTitle = "Missingno. button 3"
+        }
+        
+        showValueEditingAlert(title: alertTitle, message: alertMessage, defaultText: nil, keyboardType: .decimalPad, completion: {
+            [self] (newValueString) in
+            if let newValueString = newValueString {
+                if let newValueDouble = Double(newValueString) {
+                    let newValue = CGFloat(newValueDouble)
+                    
+                    switch (self.currentColorMode!) {
+                    case .hsb:
+                        self.setCurrentColor(h: nil, s: newValue / 100.0, b: nil)
+                        
+                    default:    //Default color mode is RGB.
+                        self.setCurrentColor(r: nil, g: newValue / 255.0, b: nil)
+                    }
+                    
+                    self.updateSliderValuesFromCurrentColor()
+                    self.updateLabelTextFromSliderValues()
+                    self.updateHexValueLabelTextFromCurrentColor()
+                    self.updateViewBackgroundColor()
+                }
+            }
+        })
+    }
+    
+    @IBAction func editButton4Pressed(_ sender: UIButton) {
+        var alertTitle: String!
+        var alertMessage: String?
+        switch (currentColorMode!) {
+        case .rgb:
+            alertTitle = "New blue value?"
+            alertMessage = "0 ~ 255"
+        case .hsb:
+            alertTitle = "New brightness value?"
+            alertMessage = "0% ~ 100%"
+        default:
+            alertTitle = "Missingno. button 2"
+        }
+        
+        showValueEditingAlert(title: alertTitle, message: alertMessage, defaultText: nil, keyboardType: .decimalPad, completion: {
+            [self] (newValueString) in
+            if let newValueString = newValueString {
+                if let newValueDouble = Double(newValueString) {
+                    let newValue = CGFloat(newValueDouble)
+                    
+                    switch (self.currentColorMode!) {
+                    case .hsb:
+                        self.setCurrentColor(h: nil, s: nil, b: newValue / 100.0)
+                        
+                    default:    //Default color mode is RGB.
+                        self.setCurrentColor(r: nil, g: nil, b: newValue / 255.0)
+                    }
+                    
+                    self.updateSliderValuesFromCurrentColor()
+                    self.updateLabelTextFromSliderValues()
+                    self.updateHexValueLabelTextFromCurrentColor()
+                    self.updateViewBackgroundColor()
+                }
+            }
+        })
+    }
+    
     @IBAction func colorModeSegmentedControlValueChanged(_ sender: UISegmentedControl) {
         currentColorMode = ColorMode(rawValue: sender.selectedSegmentIndex)
         updateElementsVisibility()
